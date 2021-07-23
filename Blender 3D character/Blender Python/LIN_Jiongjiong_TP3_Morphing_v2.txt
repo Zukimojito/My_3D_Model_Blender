@@ -1,0 +1,128 @@
+import bpy
+import random
+
+
+#clear 
+bpy.ops.object.select_by_type(type='MESH')
+bpy.ops.object.delete()
+
+
+####################################################################################################################
+
+#Cube Modèle 1
+bpy.ops.mesh.primitive_cube_add(location = (0,1,0),size=1);
+bpy.ops.object.modifier_add(type='SUBSURF')
+bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subdivision")
+
+#stock les donneés vertices ds vertices1
+vertices1 = bpy.context.object.data.vertices
+print(vertices1)
+
+NombreVertice1 = len(vertices1)
+print(NombreVertice1)
+
+cordo = []
+
+for i in range(0,NombreVertice1) :
+    cordo.append(vertices1[i].co.copy())
+print(cordo)
+
+bpy.context.scene.frame_start = 0
+bpy.context.scene.frame_end = 300
+ 
+
+bpy.context.scene.frame_set(100)
+
+for i in range(0,NombreVertice1) :
+    vertices1[i].co.x = cordo[i][0] + random.uniform(0,1)
+    vertices1[i].co.y = cordo[i][1] + random.uniform(0,1)
+    vertices1[i].co.z = cordo[i][2] + random.uniform(0,1)
+    vertices1[i].keyframe_insert(data_path='co')
+
+#####################################################################################################################
+
+#Cube Modème 2
+
+bpy.ops.mesh.primitive_cube_add(location = (2,1,0),size=1)
+bpy.ops.object.modifier_add(type='SUBSURF')
+bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subdivision")
+
+verticeBoule = bpy.context.object.data.vertices
+print(verticeBoule)
+
+NombreVerticesBoule = len(verticeBoule)
+print(NombreVerticesBoule)
+
+cordoB = []
+
+for i in range(0,NombreVerticesBoule) :
+    cordoB.append(verticeBoule[i].co.copy())
+
+print(cordoB)
+
+bpy.context.scene.frame_set(200)
+
+for i in range(0,NombreVerticesBoule) :
+    verticeBoule[i].co.x = cordoB[i][0] + random.uniform(0,1)
+    verticeBoule[i].co.y = cordoB[i][1] + random.uniform(0,1)
+    verticeBoule[i].co.z = cordoB[i][2] + random.uniform(0,1)
+    verticeBoule[i].keyframe_insert(data_path='co')
+
+######################################################################################################################
+
+#object transform
+bpy.ops.mesh.primitive_cube_add(location = (0,-1,0),size=1)
+bpy.ops.object.modifier_add(type='SUBSURF')
+bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subdivision")
+
+vertices2 = bpy.context.object.data.vertices
+print(vertices2)
+
+NombreVertice2 = len(vertices2)
+print(NombreVertice2)
+
+cordoT = []
+
+for i in range(0,NombreVertice2) :
+    cordoT.append(vertices2[i].co.copy())
+print(cordoT)
+
+bpy.context.scene.frame_set(0)
+
+for i in range(0,NombreVertice2) :
+    vertices2[i].keyframe_insert(data_path='co')
+    
+Time_animation = 0;
+
+bpy.context.scene.frame_set(100)
+
+#récupere les vertices du vertices 1
+for i in range(0,NombreVertice2) :
+    vertices2[i].co.x = vertices1[i].co.x
+    vertices2[i].co.y = vertices1[i].co.y
+    vertices2[i].co.z = vertices1[i].co.z
+    vertices2[i].keyframe_insert(data_path='co')
+    
+#reset cube 
+bpy.context.scene.frame_set(200)
+for k in range(0,NombreVertice2) :
+    vertices2[k].co.x = cordo[k][0] + 2
+    vertices2[k].co.y = cordo[k][1]
+    vertices2[k].co.z = cordo[k][2]
+    vertices2[k].keyframe_insert(data_path='co')
+    
+    
+ #récupère les vertices du vertices 2       
+bpy.context.scene.frame_set(300)
+for j in range(0,NombreVertice2) :
+    vertices2[j].co.x = verticeBoule[j].co.x + 2
+    vertices2[j].co.y = verticeBoule[j].co.y
+    vertices2[j].co.z = verticeBoule[j].co.z
+    vertices2[j].keyframe_insert(data_path='co')
+ 
+#reset at 0 animation
+bpy.context.scene.frame_set(0)
+bpy.ops.screen.animation_play()
+
+
+
